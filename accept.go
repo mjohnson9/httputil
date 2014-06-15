@@ -1,6 +1,8 @@
 package httputil
 
 import (
+	"bytes"
+	"fmt"
 	"path"
 	"sort"
 	"strconv"
@@ -44,6 +46,26 @@ func (a AcceptHeader) FindBestType(knownTypes []string) string {
 	}
 
 	return ""
+}
+
+func (a AcceptHeader) String() string {
+	buf := new(bytes.Buffer)
+
+	first := true
+	for _, acceptItem := range a {
+		if !first {
+			buf.WriteRune(',')
+		} else {
+			first = false
+		}
+
+		buf.WriteString(acceptItem.MIME)
+		if acceptItem.Quality != 1 {
+			fmt.Fprintf(buf, ";q=%.1f", acceptItem.Quality)
+		}
+	}
+
+	return buf.String()
 }
 
 type AcceptItem struct {
