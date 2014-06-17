@@ -75,14 +75,14 @@ type AcceptItem struct {
 }
 
 func ParseAccept(acceptHeader string) AcceptHeader {
-	headerSplit := strings.Split(strings.ToLower(strings.TrimSpace(acceptHeader)), ",")
+	headerSplit := strings.Split(strings.ToLower(acceptHeader), ",")
 	parsed := make(AcceptHeader, 0, len(headerSplit))
 outerLoop:
 	for i, acceptableUnsplit := range headerSplit {
 		tags := strings.Split(acceptableUnsplit, ";")
 
 		current := &AcceptItem{
-			MIME:     tags[0],
+			MIME:     strings.TrimSpace(tags[0]),
 			Position: i,
 			Quality:  1,
 		}
@@ -91,6 +91,7 @@ outerLoop:
 		tags = tags[1:]
 
 		for _, tag := range tags {
+			tag = strings.TrimSpace(tag)
 			const (
 				qualityPrefix    = "q="
 				qualityPrefixLen = len(qualityPrefix)
